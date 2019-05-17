@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>Sign-Up Today!</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <br>
+
+    <!-- Jumbotron -->
+    <div class="jumbotron">
+      <h1 class="text-center">Sign-Up Today!</h1>
+    </div>
+    <div class="row">
+
+      <!-- Sign-Up Card-->
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            New Member Sign-Up
+          </div>
+          <div class="card-body">
+
+            <!-- Sign-up Form (note the various input "types")-->
+            <form role="form">
+              <div class="form-group">
+                <label for="name-input">Name:</label>
+                <input class="form-control" id="name-input" type="text">
+              </div>
+              <div class="form-group">
+                <label for="email-input">Email:</label>
+                <input class="form-control" id="email-input" type="email">
+              </div>
+              <div class="form-group">
+                <label for="age-input">Age:</label>
+                <input class="form-control" id="age-input" type="number">
+              </div>
+              <div class="form-group">
+                <label for="comment-input">How did you hear about us?</label>
+                <textarea class="form-control" id="comment-input" rows="5"></textarea>
+              </div>
+              <button class="btn btn-default" id="add-user" type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Most Recent Member Card -->
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            Most Recent Member
+          </div>
+          <div class="card-body" id="recent-member">
+            <h2 id="name-display">Jimmy John</h2>
+            <h4 id="email-display">Email: jimmy@john.edu</h4>
+            <h4 id="age-display">Age: 27</h4>
+            <p id="comment-display">I'm signing up, because I want to spread sandwiches to the world.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+
+  <!-- LINK TO FIREBASE GOES HERE -->
+  <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
+
+  <!-- Script -->
+  <script>
+    // This is the initial firebase config that allows the user to read/write from the database at that url.
+    var config = {
+      apiKey: "AIzaSyDqpdfFeica589OwegH2fxyIHai5Wqool4",
+      authDomain: "test-677c5.firebaseapp.com",
+      databaseURL: "https://test-677c5.firebaseio.com",
+      projectId: "test-677c5",
+      storageBucket: "test-677c5.appspot.com",
+      messagingSenderId: "945283508396"
+    };
+    firebase.initializeApp(config);
+
+    // This is the variable that is used for all firebase interactions. 
+    var database = firebase.database()
+
+    // The js for the submit button that adds a user.
+    $("#add-user").on("click", function (event) {
+      // THIS LINE IS VERY IMPORTANT, IT PREVENTS THE PAGE FROM REFRESHING WHEN THE BUTTON IS CLICKED.
+      event.preventDefault();
+      // This sends the values we just inputted into firebase for later retrieval by the only other function in this js
+      database.ref().set({
+        name: $("#name-input").val(),
+        email: $("#email-input").val(),
+        age: $("#age-input").val(),
+        comment: $("#comment-input").val()
+      });
+      // This sets the visible html to be the values we just inputted or the values of what is in firebase
+      $("#name-display").text(name);
+      $("#email-display").text(email);
+      $("#age-display").text(age);
+      $("#comment-display").text(comment);
+    })
+    // This is the function that runs whenever a value changes in firebase and on load.
+    database.ref().on("value", function (snapshot) {
+      // This if statement makes sure the firebase is not empty before putting its values it.
+      if (snapshot.val() != null) {
+        $("#name-display").text(snapshot.val().name);
+        $("#email-display").text(snapshot.val().email);
+        $("#age-display").text(snapshot.val().age);
+        $("#comment-display").text(snapshot.val().comment);
+      }
+    })
+
+  </script>
+
+</body>
+
+</html>
